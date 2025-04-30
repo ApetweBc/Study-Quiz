@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dynamic AWS Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+      <h2 class="text-3xl font-bold text-gray-800 mb-8">Dynamic AWS Quiz</h2>
+
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <label
+          for="topicsInput"
+          class="block text-gray-700 text-sm font-semibold mb-2"
+        >
+          Enter AWS topics (comma-separated):
+        </label>
+        <input
+          type="text"
+          id="topicsInput"
+          placeholder="e.g., EC2, S3, VPC"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+        />
+        <button
+          onclick="generateQuiz()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+        >
+          Start Quiz
+        </button>
+      </div>
+
+      <div id="quizContainer" class="space-y-4"></div>
+      <div id="result" class="hidden mt-4 p-4 rounded-md"></div>
+    </div>
+
+    <script>
+      let questions = [];
+      let current = 0;
+      let score = 0;
+
+      async function generateQuiz() {
+        const topics = document
+          .getElementById("topicsInput")
+          .value.split(",")
+          .map((t) => t.trim());
+        document.getElementById("quizContainer").innerHTML = `
+          <div class="flex items-center justify-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span class="ml-2">Loading quiz...</span>
+          </div>
+        `;
+
+        try {
+          const res = await fetch("http://localhost:4000/generate-quiz", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ topics }),
+          });
+
+          if (!res.ok) throw new Error("Failed to fetch quiz questions");
+
+          const data = await res.json();
+          questions = data.questions;
+          current = 0;
+          score = 0;
+          showQuestion();
+        } catch (error) {
+          document.getElementById("quizContainer").innerHTML = `
+            <div class="bg-red-100 text-red-800 p-4 rounded-md">
+              <p class="font-semibold">Error: ${error.message}</p>
+            </div>
+          `;
+        }
+        const res = await fetch("http://localhost:4000/generate-quiz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topics }),
+        });
+
+        const data = await res.json();
+        questions = data.questions;
+        current = 0;
+        score = 0;
+        showQuestion();
+      }
+
+      function showQuestion() {
+        const q = questions[current];
+        document.getElementById("quizContainer").innerHTML = `
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="mb-4">
+              <h3 class="text-xl font-semibold text-gray-800">Q${
+                current + 1
+              }: ${q.question}</h3>
+            </div>
+            <div class="space-y-3">
+              ${q.options
+                .map(
+                  (opt, i) => `
+                <div class="flex items-center">
+                  <input 
+                    type="radio" 
+                    id="opt${i}" 
+                    name="answer" 
+                    value="${i}"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  >
+                  <label for="opt${i}" class="ml-2 block text-gray-700">
+                    ${opt}
+                  </label>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+            <button 
+              onclick="submitAnswer()"
+              class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            >
+              Submit Answer
+            </button>
+          </div>
+        `;
+      }
+
+      function submitAnswer() {
+        const selected = document.querySelector('input[name="answer"]:checked');
+        if (!selected) return alert("Please select an answer");
+
+        const answer = parseInt(selected.value);
+        const q = questions[current];
+        const correct = answer === q.correct;
+        if (correct) score++;
+
+        const result = document.getElementById("result");
+        result.classList.remove("hidden");
+        result.className = `mt-4 p-4 rounded-md ${
+          correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`;
+        result.innerHTML = `
+          <p class="font-semibold">${
+            correct ? "✅ Correct!" : "❌ Incorrect."
+          }</p>
+          <p class="mt-2 text-sm">${q.explanation}</p>
+        `;
+
+        setTimeout(() => {
+          current++;
+          result.classList.add("hidden");
+          if (current < questions.length) {
+            showQuestion();
+          } else {
+            document.getElementById("quizContainer").innerHTML = `
+              <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Quiz Complete! 🎉</h3>
+                <p class="text-lg">Your score: <span class="font-semibold text-blue-600">${score} / ${questions.length}</span></p>
+              </div>
+            `;
+          }
+        }, 3500);
+      }
+    </script>
+  </body>
+</html>
