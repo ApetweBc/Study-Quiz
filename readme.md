@@ -1,6 +1,8 @@
 # Study Quiz
 
-This project was created as a self-assessment tool to test knowledge while taking courses.
+This project was a self-assessment tool to test knowledge while taking courses.
+AI integration allows you to generate questions and test your skills on any subject. 
+Open AI, deepseek etc. 
 
 ## Overview
 
