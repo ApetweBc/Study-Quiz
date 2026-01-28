@@ -1,0 +1,127 @@
+[
+  {
+    "id": 1,
+    "series": "1: School Bus Inspection and Maintenance",
+    "question": "What is the primary responsibility of an operator regarding the condition of the bus each day?",
+    "options": [
+      "A) To ensure the bus is clean for passengers",
+      "B) To ensure the bus is in safe operating condition",
+      "C) To verify the route schedule is accurate",
+      "D) To check that the fuel tank is completely full"
+    ],
+    "answer": "B",
+    "citation": "Each day, operators are responsible to ensure the bus is in safe operating condition. [cite: 17]"
+  },
+  {
+    "id": 2,
+    "series": "1: School Bus Inspection and Maintenance",
+    "question": "When checking the radiator coolant level, what is the acceptable level if there is no mark on the tank?",
+    "options": [
+      "A) 1.0 cm from the filler neck",
+      "B) 5.0 cm from the filler neck",
+      "C) 2.5 cm from the filler neck",
+      "D) Level with the top of the filler neck"
+    ],
+    "answer": "C",
+    "citation": "If there is no mark on the tank, 2.5 cm from the filler neck is acceptable. [cite: 11]"
+  },
+  {
+    "id": 3,
+    "series": "1: School Bus Inspection and Maintenance",
+    "question": "What is the maximum allowable tension for a fan belt during inspection?",
+    "options": ["A) 0.5 cm", "B) 1.5 cm or less", "C) 2.5 cm", "D) 3.0 cm"],
+    "answer": "B",
+    "citation": "Fan belts should have 1.5 cm or less tension. [cite: 11]"
+  },
+  {
+    "id": 4,
+    "series": "1: School Bus Inspection and Maintenance",
+    "question": "In an air brake system, at what air pressure will the parking brake remain applied?",
+    "options": [
+      "A) Below 200 kPa",
+      "B) Below 310-345 kPa (45-50 psi)",
+      "C) Below 500 kPa",
+      "D) Below 100 kPa"
+    ],
+    "answer": "B",
+    "citation": "For air brake systems, the parking brake will remain applied if the air pressure falls below 310-345 kPa (45-50 psi). [cite: 35]"
+  },
+  {
+    "id": 5,
+    "series": "1: School Bus Inspection and Maintenance",
+    "question": "How long is a daily trip inspection valid for according to the Commercial Vehicle Safety Regulation?",
+    "options": [
+      "A) 12 hours",
+      "B) 24 hours from the time recorded in the report",
+      "C) 48 hours",
+      "D) Until the end of the driver's shift"
+    ],
+    "answer": "B",
+    "citation": "A daily trip inspection is valid for 24 hours from the time recorded in the trip inspection report. [cite: 58]"
+  },
+  {
+    "id": 6,
+    "series": "2: Loading, Unloading & Passenger Management",
+    "question": "What must an operator do when slowing down to stop on a highway to load or unload passengers?",
+    "options": [
+      "A) Activate the hazard lights immediately",
+      "B) Activate the alternately flashing amber lamps",
+      "C) Activate the alternately flashing red lamps",
+      "D) Deploy the stop arm before slowing down"
+    ],
+    "answer": "B",
+    "citation": "A person driving a school bus shall activate the alternately flashing amber lamps when that person begins to slow down the school bus for the purpose of stopping on a highway to load or unload passengers. [cite: 123]"
+  },
+  {
+    "id": 7,
+    "series": "2: Loading, Unloading & Passenger Management",
+    "question": "When is it appropriate to activate the alternately flashing red lights?",
+    "options": [
+      "A) While the bus is still in motion to warn traffic",
+      "B) As soon as the amber lights are turned off",
+      "C) Only once the bus is completely stopped, secured, and traffic is controlled",
+      "D) When the bus is 50 metres from the stop"
+    ],
+    "answer": "C",
+    "citation": "Never activate the alternately flashing red lights until the bus has completely stopped, the bus is properly secured and the traffic is controlled! [cite: 144]"
+  },
+  {
+    "id": 8,
+    "series": "2: Loading, Unloading & Passenger Management",
+    "question": "What is the only explanation a passenger needs for a safety-related request from the operator?",
+    "options": [
+      "A) 'Because I am the driver'",
+      "B) 'It is the law'",
+      "C) 'For your safety!'",
+      "D) 'To avoid a ticket'"
+    ],
+    "answer": "C",
+    "citation": "The only explanation necessary to the passenger is 'for your safety!' [cite: 275]"
+  },
+  {
+    "id": 9,
+    "series": "2: Loading, Unloading & Passenger Management",
+    "question": "When should seating assignments typically be finalized for most passengers on a new route?",
+    "options": [
+      "A) On the very first day",
+      "B) After three or four days on the route",
+      "C) At the end of the first month",
+      "D) Only if a major fight occurs"
+    ],
+    "answer": "B",
+    "citation": "The seating assignments should be done after three or four days on the route (except for Kindergarten and Grade 1 – they are immediate). [cite: 317]"
+  },
+  {
+    "id": 10,
+    "series": "3: Bus Manoeuvres & Defensive Driving",
+    "question": "What is the recommended steering method when making a turn in a school bus?",
+    "options": [
+      "A) One-handed steering",
+      "B) Hand-over-hand method",
+      "C) Letting the wheel slide through the hands",
+      "D) Crossing arms at the bottom of the wheel"
+    ],
+    "answer": "B",
+    "citation": "During a turn, the hand-over-hand steering method is the best to use. [cite: 347]"
+  }
+]

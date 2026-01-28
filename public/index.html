@@ -1,34 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Dynamic AWS Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8 max-w-2xl">
-      <h2 class="text-3xl font-bold text-gray-800 mb-8">Dynamic AWS Quiz</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8">Study Quiz</h2>
 
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <label
-          for="topicsInput"
-          class="block text-gray-700 text-sm font-semibold mb-2"
-        >
-          Enter AWS topics (comma-separated):
-        </label>
-        <input
-          type="text"
-          id="topicsInput"
-          placeholder="e.g., EC2, S3, VPC"
-          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-        />
+      <!-- Selection Screen -->
+      <div id="selectionScreen" class="space-y-6">
+        <h3 class="text-xl font-semibold text-gray-700 text-center mb-8">
+          Choose an option to get started:
+        </h3>
+
         <button
-          onclick="generateQuiz()"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+          onclick="showAISection()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
         >
-          Start Quiz
+          <span class="text-lg">🤖 AI Generated Questions</span>
+          <p class="text-sm font-normal mt-2">
+            Let AI generate questions based on your topic and prompt
+          </p>
+        </button>
+
+        <button
+          onclick="showUploadSection()"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg shadow-md transition duration-200 transform hover:scale-105"
+        >
+          <span class="text-lg">📁 Upload Your Questions</span>
+          <p class="text-sm font-normal mt-2">
+            Upload a JSON file with your own questions and answers
+          </p>
         </button>
       </div>
+
+      <!-- AI Generated Questions Section -->
+      <div id="aiSection" class="hidden">
+        <button
+          onclick="backToSelection()"
+          class="mb-6 text-blue-600 hover:text-blue-800 font-semibold"
+        >
+          ← Back
+        </button>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">
+            Generate Questions with AI
+          </h3>
+
+          <form id="question-form">
+            <div class="mb-4">
+              <label for="topic" class="block text-gray-700 font-semibold mb-2"
+                >Topic:</label
+              >
+              <input
+                type="text"
+                id="topic"
+                name="topic"
+                placeholder="e.g., AWS EC2"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="prompt" class="block text-gray-700 font-semibold mb-2"
+                >Prompt:</label
+              >
+              <input
+                type="text"
+                id="prompt"
+                name="prompt"
+                placeholder="e.g., Generate multiple choice questions"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div class="mb-6">
+              <label
+                for="num-questions"
+                class="block text-gray-700 font-semibold mb-2"
+                >Number of Questions:</label
+              >
+              <input
+                type="number"
+                id="num-questions"
+                name="num-questions"
+                min="1"
+                max="20"
+                placeholder="e.g., 5"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            >
+              Generate Questions
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Upload Questions Section -->
+      <div id="uploadSection" class="hidden">
+        <button
+          onclick="backToSelection()"
+          class="mb-6 text-green-600 hover:text-green-800 font-semibold"
+        >
+          ← Back
+        </button>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6">
+            Upload Your Questions
+          </h3>
+
+          <form id="upload-json-form">
+            <div class="mb-6">
+              <label
+                for="json-file"
+                class="block text-gray-700 font-semibold mb-2"
+                >Select JSON File:</label
+              >
+              <input
+                type="file"
+                id="json-file"
+                name="json-file"
+                accept="application/json"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <p class="text-sm text-gray-600 mt-2">
+                Expected format: Array of objects with question, options
+                (array), answer, and optional citation
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            >
+              Upload
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div id="questions-display" class="hidden"></div>
 
       <div id="quizContainer" class="space-y-4"></div>
       <div id="result" class="hidden mt-4 p-4 rounded-md"></div>
@@ -39,84 +164,202 @@
       let current = 0;
       let score = 0;
 
-      async function generateQuiz() {
-        const topics = document
-          .getElementById("topicsInput")
-          .value.split(",")
-          .map((t) => t.trim());
-        document.getElementById("quizContainer").innerHTML = `
-          <div class="flex items-center justify-center">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span class="ml-2">Loading quiz...</span>
-          </div>
-        `;
+      // Navigation functions
+      function showAISection() {
+        document.getElementById("selectionScreen").classList.add("hidden");
+        document.getElementById("aiSection").classList.remove("hidden");
+      }
 
-        try {
-          const res = await fetch("http://localhost:4000/generate-quiz", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ topics }),
-          });
+      function showUploadSection() {
+        document.getElementById("selectionScreen").classList.add("hidden");
+        document.getElementById("uploadSection").classList.remove("hidden");
+      }
 
-          if (!res.ok) throw new Error("Failed to fetch quiz questions");
-
-          const data = await res.json();
-          questions = data.questions;
-          current = 0;
-          score = 0;
-          showQuestion();
-        } catch (error) {
-          document.getElementById("quizContainer").innerHTML = `
-            <div class="bg-red-100 text-red-800 p-4 rounded-md">
-              <p class="font-semibold">Error: ${error.message}</p>
-            </div>
-          `;
-        }
-        const res = await fetch("http://localhost:4000/generate-quiz", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topics }),
-        });
-
-        const data = await res.json();
-        questions = data.questions;
+      function backToSelection() {
+        document.getElementById("selectionScreen").classList.remove("hidden");
+        document.getElementById("aiSection").classList.add("hidden");
+        document.getElementById("uploadSection").classList.add("hidden");
+        document.getElementById("questions-display").innerHTML = "";
+        document.getElementById("quizContainer").innerHTML = "";
+        document.getElementById("result").classList.add("hidden");
+        questions = [];
         current = 0;
         score = 0;
+      }
+
+      //...existing code...
+
+      // Form submission handlers
+      document
+        .getElementById("question-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const topic = document.getElementById("topic").value;
+          const prompt = document.getElementById("prompt").value;
+          const numQuestions = document.getElementById("num-questions").value;
+
+          if (!topic || !numQuestions) {
+            alert("Please fill in all fields");
+            return;
+          }
+
+          const questionsDisplay = document.getElementById("questions-display");
+          questionsDisplay.innerHTML = `
+            <div class="bg-white rounded-lg shadow-lg p-8 loader-container">
+              <div class="spinner"></div>
+              <p class="loader-text">Generating questions with AI<span class="loader-dots"></span></p>
+              <p class="loader-subtext">Creating your customized quiz, please wait...</p>
+            </div>
+          `;
+
+          fetch("/generate-questions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ topic, prompt, numQuestions }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                alert("Error: " + data.error);
+                questionsDisplay.innerHTML = "";
+                return;
+              }
+
+              questions = data.questions;
+              current = 0;
+              score = 0;
+              document.getElementById("aiSection").classList.add("hidden");
+              questionsDisplay.innerHTML = "";
+              startQuiz();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              questionsDisplay.innerHTML = `
+                <div class="bg-red-100 text-red-800 p-4 rounded-lg">
+                  <p class="font-semibold">Error generating questions</p>
+                  <p class="text-sm mt-2">${error.message}</p>
+                </div>
+              `;
+              alert("Error generating questions: " + error.message);
+            });
+        });
+
+      document
+        .getElementById("upload-json-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const jsonFile = document.getElementById("json-file").files[0];
+
+          if (!jsonFile) {
+            alert("Please select a JSON file");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("json-file", jsonFile);
+
+          const questionsDisplay = document.getElementById("questions-display");
+          questionsDisplay.innerHTML = `
+            <div class="bg-white rounded-lg shadow-lg p-8 loader-container">
+              <div class="spinner"></div>
+              <p class="loader-text">Processing your questions<span class="loader-dots"></span></p>
+              <p class="loader-subtext">Loading and shuffling your quiz content...</p>
+            </div>
+          `;
+
+          fetch("/upload-json", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                questionsDisplay.innerHTML = `
+                  <div class="bg-red-100 text-red-800 p-4 rounded-lg">
+                    <p class="font-semibold">Upload Error</p>
+                    <p class="text-sm mt-2">${data.error}</p>
+                    <p class="text-sm mt-2">Make sure your JSON file contains an array of questions with required fields: question, options (array), and answer.</p>
+                  </div>
+                `;
+                console.error("Server error:", data);
+                return;
+              }
+              questions = data.questions;
+              current = 0;
+              score = 0;
+              document.getElementById("uploadSection").classList.add("hidden");
+              questionsDisplay.innerHTML = "";
+              startQuiz();
+            })
+            .catch((error) => {
+              console.error("Network/Parse error:", error);
+              questionsDisplay.innerHTML = `
+                <div class="bg-red-100 text-red-800 p-4 rounded-lg">
+                  <p class="font-semibold">Error uploading file</p>
+                  <p class="text-sm mt-2">${error.message}</p>
+                  <p class="text-sm mt-2">Please check the JSON format and try again.</p>
+                </div>
+              `;
+            });
+        });
+
+      function startQuiz() {
+        if (questions.length === 0) {
+          alert("No questions available.");
+          return;
+        }
         showQuestion();
       }
 
       function showQuestion() {
+        if (current >= questions.length) {
+          showResults();
+          return;
+        }
+
         const q = questions[current];
-        document.getElementById("quizContainer").innerHTML = `
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="mb-4">
-              <h3 class="text-xl font-semibold text-gray-800">Q${
-                current + 1
-              }: ${q.question}</h3>
+        const quizContainer = document.getElementById("quizContainer");
+
+        let optionsHTML = "";
+        q.options.forEach((option, index) => {
+          const optionLetter = option.charAt(0);
+          optionsHTML += `
+            <div class="flex items-center mb-3">
+              <input 
+                type="radio" 
+                id="opt${index}" 
+                name="answer" 
+                value="${optionLetter}"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+              >
+              <label for="opt${index}" class="ml-3 block text-gray-700">
+                ${option}
+              </label>
             </div>
-            <div class="space-y-3">
-              ${q.options
-                .map(
-                  (opt, i) => `
-                <div class="flex items-center">
-                  <input 
-                    type="radio" 
-                    id="opt${i}" 
-                    name="answer" 
-                    value="${i}"
-                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                  >
-                  <label for="opt${i}" class="ml-2 block text-gray-700">
-                    ${opt}
-                  </label>
-                </div>
-              `
-                )
-                .join("")}
+          `;
+        });
+
+        let seriesHTML = q.series
+          ? `<span class="text-sm text-gray-500 ml-4">Series: ${q.series}</span>`
+          : "";
+
+        quizContainer.innerHTML = `
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="mb-2">
+              <span class="text-sm text-gray-500">Question ${current + 1} of ${questions.length}</span>
+              ${seriesHTML}
+            </div>
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-gray-800">${q.question}</h3>
+            </div>
+            <div class="space-y-2 mb-6">
+              ${optionsHTML}
             </div>
             <button 
               onclick="submitAnswer()"
-              class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
             >
               Submit Answer
             </button>
@@ -126,39 +369,71 @@
 
       function submitAnswer() {
         const selected = document.querySelector('input[name="answer"]:checked');
-        if (!selected) return alert("Please select an answer");
+        if (!selected) {
+          alert("Please select an answer");
+          return;
+        }
 
-        const answer = parseInt(selected.value);
+        const userAnswer = selected.value;
         const q = questions[current];
-        const correct = answer === q.correct;
-        if (correct) score++;
+        const isCorrect = userAnswer === q.answer;
+
+        if (isCorrect) score++;
 
         const result = document.getElementById("result");
         result.classList.remove("hidden");
         result.className = `mt-4 p-4 rounded-md ${
-          correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          isCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
         }`;
-        result.innerHTML = `
-          <p class="font-semibold">${
-            correct ? "✅ Correct!" : "❌ Incorrect."
-          }</p>
-          <p class="mt-2 text-sm">${q.explanation}</p>
+
+        let resultHTML = `
+          <p class="font-semibold">${isCorrect ? "✅ Correct!" : "❌ Incorrect!"}</p>
+          <p class="mt-2 text-sm"><strong>Correct Answer:</strong> ${q.answer}</p>
         `;
+
+        if (q.citation) {
+          resultHTML += `<p class="mt-2 text-sm italic border-t pt-2 border-gray-400">${q.citation}</p>`;
+        }
+
+        result.innerHTML = resultHTML;
 
         setTimeout(() => {
           current++;
           result.classList.add("hidden");
-          if (current < questions.length) {
-            showQuestion();
-          } else {
-            document.getElementById("quizContainer").innerHTML = `
-              <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">Quiz Complete! 🎉</h3>
-                <p class="text-lg">Your score: <span class="font-semibold text-blue-600">${score} / ${questions.length}</span></p>
-              </div>
-            `;
-          }
-        }, 3500);
+          showQuestion();
+        }, 3000);
+      }
+
+      function showResults() {
+        const quizContainer = document.getElementById("quizContainer");
+        const percentage = ((score / questions.length) * 100).toFixed(1);
+
+        quizContainer.innerHTML = `
+          <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <h3 class="text-3xl font-bold text-gray-800 mb-4">Quiz Complete! 🎉</h3>
+            <p class="text-2xl font-semibold text-blue-600 mb-4">Your Score: ${score} / ${questions.length}</p>
+            <p class="text-xl text-gray-700 mb-6">${percentage}%</p>
+            <button 
+              onclick="retakeQuiz()"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200 mr-4"
+            >
+              Retake Quiz
+            </button>
+            <button 
+              onclick="backToSelection()"
+              class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200"
+            >
+              Back to Home
+            </button>
+          </div>
+        `;
+      }
+
+      function retakeQuiz() {
+        current = 0;
+        score = 0;
+        document.getElementById("result").classList.add("hidden");
+        showQuestion();
       }
     </script>
   </body>
