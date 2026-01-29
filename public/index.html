@@ -163,6 +163,7 @@
       let questions = [];
       let current = 0;
       let score = 0;
+      let incorrectAnswers = [];
 
       // Navigation functions
       function showAISection() {
@@ -185,6 +186,7 @@
         questions = [];
         current = 0;
         score = 0;
+        incorrectAnswers = [];
       }
 
       //...existing code...
@@ -310,6 +312,7 @@
           alert("No questions available.");
           return;
         }
+        incorrectAnswers = [];
         showQuestion();
       }
 
@@ -378,7 +381,22 @@
         const q = questions[current];
         const isCorrect = userAnswer === q.answer;
 
-        if (isCorrect) score++;
+        if (isCorrect) {
+          score++;
+        } else {
+          const userOption = q.options.find(
+            (opt) => opt.charAt(0) === userAnswer,
+          );
+          const correctOption = q.options.find(
+            (opt) => opt.charAt(0) === q.answer,
+          );
+          incorrectAnswers.push({
+            question: q.question,
+            userAnswer: userOption || userAnswer,
+            correctAnswer: correctOption || q.answer,
+            series: q.series || "",
+          });
+        }
 
         const result = document.getElementById("result");
         result.classList.remove("hidden");
@@ -387,12 +405,43 @@
         }`;
 
         let resultHTML = `
-          <p class="font-semibold">${isCorrect ? "✅ Correct!" : "❌ Incorrect!"}</p>
-          <p class="mt-2 text-sm"><strong>Correct Answer:</strong> ${q.answer}</p>
+          <p class="font-semibold text-lg">${isCorrect ? "✅ Correct!" : "❌ Incorrect!"}</p>
         `;
 
+        // Show user's answer and correct answer
+        if (!isCorrect) {
+          const userOption = q.options.find(
+            (opt) => opt.charAt(0) === userAnswer,
+          );
+          const correctOption = q.options.find(
+            (opt) => opt.charAt(0) === q.answer,
+          );
+
+          resultHTML += `
+            <div class="mt-3 space-y-2">
+              <div class="bg-red-200 p-2 rounded border-l-4 border-red-600">
+                <p class="text-sm"><strong>Your answer:</strong> ${userOption || userAnswer}</p>
+              </div>
+              <div class="bg-green-200 p-2 rounded border-l-4 border-green-600">
+                <p class="text-sm"><strong>Correct answer:</strong> ${correctOption || q.answer}</p>
+              </div>
+            </div>
+          `;
+        } else {
+          const correctOption = q.options.find(
+            (opt) => opt.charAt(0) === q.answer,
+          );
+          resultHTML += `
+            <div class="mt-3">
+              <div class="bg-green-200 p-2 rounded border-l-4 border-green-600">
+                <p class="text-sm"><strong>Answer:</strong> ${correctOption || q.answer}</p>
+              </div>
+            </div>
+          `;
+        }
+
         if (q.citation) {
-          resultHTML += `<p class="mt-2 text-sm italic border-t pt-2 border-gray-400">${q.citation}</p>`;
+          resultHTML += `<p class="mt-3 text-sm italic border-t pt-2 border-gray-400">${q.citation}</p>`;
         }
 
         result.innerHTML = resultHTML;
@@ -408,23 +457,52 @@
         const quizContainer = document.getElementById("quizContainer");
         const percentage = ((score / questions.length) * 100).toFixed(1);
 
+        const incorrectListHTML = incorrectAnswers.length
+          ? `
+            <div class="mt-6 text-left">
+              <h4 class="text-xl font-semibold text-gray-800 mb-3">Incorrect Answers</h4>
+              <div class="space-y-4">
+                ${incorrectAnswers
+                  .map(
+                    (item, index) => `
+                  <div class="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p class="text-sm text-gray-500 mb-1">${item.series ? `Series: ${item.series}` : "Question"} ${index + 1}</p>
+                    <p class="font-semibold text-gray-800 mb-2">${item.question}</p>
+                    <p class="text-sm"><strong>Your answer:</strong> ${item.userAnswer}</p>
+                    <p class="text-sm"><strong>Correct answer:</strong> ${item.correctAnswer}</p>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `
+          : `
+            <div class="mt-6 bg-green-50 border border-green-200 rounded-md p-4">
+              <p class="text-green-800 font-semibold">Perfect score! No incorrect answers 🎉</p>
+            </div>
+          `;
+
         quizContainer.innerHTML = `
           <div class="bg-white rounded-lg shadow-md p-6 text-center">
             <h3 class="text-3xl font-bold text-gray-800 mb-4">Quiz Complete! 🎉</h3>
             <p class="text-2xl font-semibold text-blue-600 mb-4">Your Score: ${score} / ${questions.length}</p>
             <p class="text-xl text-gray-700 mb-6">${percentage}%</p>
-            <button 
-              onclick="retakeQuiz()"
-              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200 mr-4"
-            >
-              Retake Quiz
-            </button>
-            <button 
-              onclick="backToSelection()"
-              class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200"
-            >
-              Back to Home
-            </button>
+            ${incorrectListHTML}
+            <div class="mt-6">
+              <button 
+                onclick="retakeQuiz()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200 mr-4"
+              >
+                Retake Quiz
+              </button>
+              <button 
+                onclick="backToSelection()"
+                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-md transition duration-200"
+              >
+                Back to Home
+              </button>
+            </div>
           </div>
         `;
       }
@@ -432,6 +510,7 @@
       function retakeQuiz() {
         current = 0;
         score = 0;
+        incorrectAnswers = [];
         document.getElementById("result").classList.add("hidden");
         showQuestion();
       }
